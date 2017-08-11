@@ -1,0 +1,16 @@
+//Staunton Sample
+// pa4
+//cmps101
+//sbsample
+
+This program accepts a set of numbers and then creates an adjecency list out of them. This, then allows the Breadth First Search algorithm implementation using the Graph ADT. The shortest path between two vertices can then be calculated and printed to the console. 
+
+Use make to compile the program.
+Use make clean to remove .o and executable files.
+
+List.h - Header for List ADT
+List.c - Linked List Interface
+Graph.h - Header for Graph ADT
+Graph.c - Graph and BFS Interface
+Makefile - Compiles the program
+README - You're reading it
