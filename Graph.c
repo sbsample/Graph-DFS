@@ -10,7 +10,7 @@
 # include "Graph.h"
 /*** Constructors-Destructors ***/
 
-#define INF -2
+#define UNDEUNDEF -2
 #define NIL -1
 
 // Defines Graph
@@ -19,7 +19,8 @@ typedef struct GraphObj
     List *adjLists;
     int *color;
     int *parent;
-    int *distance;
+    int *discover;
+    int *finish;
     int order;
     int size;
     int source;
@@ -34,11 +35,13 @@ Graph newGraph(int n)
     G -> adjLists = calloc((n + 1), sizeof(List));
     G -> parent = calloc((n + 1), sizeof(int));
     G -> color = calloc((n + 1), sizeof(int));
-    G -> distance = calloc((n + 1), sizeof(int));
+    G -> discover = calloc((n + 1), sizeof(int));
+    G -> finish = calloc((n + 1), sizeof(int));
     for (int i = 1; i <= n; i++)
     {
         G -> adjLists[i] = newList();
-        G -> distance[i] = INF;
+        G -> discover[i] = UNDEF;
+        G -> finish[i] = UNDEF;
         G -> parent[i] = NIL;
         G -> color[i] = 0;
     }
@@ -74,6 +77,8 @@ void freeGraph(Graph* pG)
 }
 
 /*** Access functions ***/
+int getDiscover(Graph G, int u); /* Pre: 1<=u<=n=getOrder(G) */
+int getFinish(Graph G, int u); /* Pre: 1<=u<=n=getOrder(G) */
 
 // getOrder()
 // returns the number of vertices
@@ -208,45 +213,32 @@ void addArc(Graph G, int u, int v)
     }
     G -> size++;
 }
-// BFS()
-// does breadth first search from s
-void BFS(Graph G, int s)
-{
-    for(int i = 1; i <= getOrder(G); i++)
-    {
-        G -> color[i] = 0;
-        G -> distance[i] = INF;
-        G -> parent[i] = NIL;
-    }
-    G -> distance[s] = 0;
-    G -> parent[s] = NIL;
-    G -> source = s;
-    G -> color[s] = 1;
+// DFS()
+// Runs depth first search
+void DFS(Graph G, List S);
 
-    List L = newList();
-    append(L, s);
-    for (moveFront(L); index(L) >= 0; moveNext(L)) {
-        int u = get(L);
-        if ( length(G -> adjLists[u]) == 0)
-        {
-            return;
-        }
-        for (moveFront(G -> adjLists[u]); index(G -> adjLists[u]) >= 0; moveNext(G -> adjLists[u]))
-        {
-            int v = get(G -> adjLists[u]);
-            if (G -> color[v] == 0)
-            {
-                G -> color[v] = 1;
-                G -> distance[v] = G -> distance[u] + 1;
-                G -> parent[v] = u;
-                append(L, v);
-            }
-        }
-        G -> color[u] = 2;
-    }
-    freeList(&L); // free the list
+
+/* Other Functions */
+Graph transpose(Graph G)
+{
+    Graph tGraph = newGraph()
 }
-/*** Other operations ***/
+
+ // public Matrix transpose()
+ //  {
+ //    Matrix transMatrix = new Matrix(size);
+ //    for(int i = 0; i <= size; i++)
+ //    {
+ //      for(matrixArray[i].moveFront(); matrixArray[i].index()>=0; matrixArray[i].moveNext())
+ //      {
+ //        Entry transEntry = (Entry) matrixArray[i].get();
+ //        int newColumn = transEntry.column;
+ //        transMatrix.changeEntry(newColumn, i, transEntry.value);
+ //      }
+ //    }
+
+ //    return transMatrix;
+ //  }
 //printGraph()
 // prints out graph
 void printGraph(FILE* out, Graph G)
