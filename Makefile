@@ -3,7 +3,7 @@
 # pa4
 # cmps101
 
-CC = gcc-7
+CC = gcc
 CFLAGS = -g -Wall -Werror -std=c99
 OBJECTS = Graph.o List.o FindPath.o
 

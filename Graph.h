@@ -2,7 +2,7 @@
 // pa4
 //cmps101
 //sbsample
-#define _POSIX_C_SOURCE 200809l
+// #define _POSIX_C_SOURCE 200809l
 # include <string.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -16,12 +16,12 @@ Graph newGraph(int n);
 void freeGraph(Graph* pG);
 /*** Access functions ***/
 int getOrder(Graph G);
-int getDiscover(Graph G, int u); 
-int getFinish(Graph G, int u); 
+int getDiscover(Graph G, int u);
+int getFinish(Graph G, int u);
 int getSize(Graph G);
-int getSource(Graph G);
 int getParent(Graph G, int u);
-int getDist(Graph G, int u);
+void visit(Graph G, List L, int u, int* t);
+
 void DFS(Graph G, List S); /* Pre: length(S)==getOrder(G) */
 
 /*** Manipulation procedures ***/

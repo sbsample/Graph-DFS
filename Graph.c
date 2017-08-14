@@ -2,7 +2,7 @@
 // pa4
 //cmps101
 //sbsample
-#define _POSIX_C_SOURCE 200809l
+// #define _POSIX_C_SOURCE 200809l
 # include <string.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -10,7 +10,7 @@
 # include "Graph.h"
 /*** Constructors-Destructors ***/
 
-#define UNDEUNDEF -2
+#define UNDEF -2
 #define NIL -1
 
 // Defines Graph
@@ -24,6 +24,7 @@ typedef struct GraphObj
     int order;
     int size;
     int source;
+
 
 }GraphObj;
 
@@ -48,6 +49,7 @@ Graph newGraph(int n)
     G -> source = NIL;
     G -> order = n;
     G -> size = 0;
+
     return G;
 }
 
@@ -60,16 +62,20 @@ void freeGraph(Graph* pG)
         for (int i = 1; i < getOrder(*pG); i++ )
         {
             freeList(&(*pG) -> adjLists[i]);
+            free((*pG)->adjLists[i]);
+            (*pG)->adjLists[i] = NULL;
         }
         free((*pG) -> adjLists);
         free((*pG) -> color);
-        free((*pG) -> distance);
+        free((*pG) -> discover);
+        free((*pG) -> finish);
         free((*pG) -> parent);
 
         (*pG) -> adjLists = NULL;
         (*pG) -> color = NULL;
-        (*pG) -> distance = NULL;
+        (*pG) -> discover = NULL;
         (*pG) -> parent = NULL;
+        (*pG) -> finish = NULL;
 
         free(*pG);
         *pG = NULL;
@@ -77,8 +83,19 @@ void freeGraph(Graph* pG)
 }
 
 /*** Access functions ***/
-int getDiscover(Graph G, int u); /* Pre: 1<=u<=n=getOrder(G) */
-int getFinish(Graph G, int u); /* Pre: 1<=u<=n=getOrder(G) */
+//getDiscover()
+// returns discover time of vertex u
+int getDiscover(Graph G, int u)
+{
+    return G -> discover[u];
+}
+
+//getFinish()
+// returns finish time of vertex u
+int getFinish(Graph G, int u)
+{
+    return G -> finish[u];
+}
 
 // getOrder()
 // returns the number of vertices
@@ -98,12 +115,7 @@ int getSize(Graph G)
 {
     return G -> size;
 }
-// getSource()
-// returns the most recently used Vertex
-int getSource(Graph G)
-{
-    return G -> source;
-}
+
 
 // getParent()
 // returns the parent of of input u
@@ -111,23 +123,17 @@ int getParent(Graph G, int u)
 {
     return G -> parent[u];
 }
-// getDist()
-// returns the distance from the most recent BFS source
-int getDist(Graph G, int u)
-{
-    return G -> distance[u];
-}
+
 // getPath()
 // appends to List L the path from u
 void getPath(List L, Graph G, int u)
 {
-    if(u == G -> source) 
+    if(u == G -> source)
     {
         append(L, u);
-    } 
-    else if(G -> parent[u] != NIL) 
+    }
+    else if(G -> parent[u] != NIL)
     {
-        
         getPath(L, G, G -> parent[u]);
         append(L, u);
     }
@@ -135,32 +141,7 @@ void getPath(List L, Graph G, int u)
     {
         append(L, NIL);
     }
-    // List pathList = newList();
-    // for(int i = u; i != G -> source && i != NIL; i = getParent(G,i))
-    // {
-    //     prepend(path,i);
-    // }
-    // if(i == G -> source)
-    // {
-    //     prepend(pathList,i);
-    // }
-    // else
-    // {
-    //     append(pathList, NIL);
-    // }
 
-    // if(back(pathList) == NIL)
-    // {
-    //     append(L,NIL);
-    // }
-    // else
-    // {
-    //     for(moveFront(pathList); index(pathList) != -1 ; moveNext(pathList))
-    //     {
-    //         append(L,get(pathList));
-    //     }
-    // }
-    // }
 
 }
 /*** Manipulation procedures ***/
@@ -171,7 +152,6 @@ void makeNull(Graph G)
     for (int i = 1; i < G -> size; i++)
     {
         freeList(&G -> adjLists[i]);
-        G -> distance[i] = INF;
         G -> parent[i] = NIL;
         G -> color[i] = 0;
     }
@@ -187,7 +167,7 @@ void addEdge(Graph G, int u, int v)
 // addArc()
 // adds to Adj list u to v
 void addArc(Graph G, int u, int v)
-{  
+{
     moveFront(G -> adjLists[u]);
     for (moveFront(G -> adjLists[u]); index(G -> adjLists[u]) != -1; moveNext(G -> adjLists[u]))
     {
@@ -215,30 +195,68 @@ void addArc(Graph G, int u, int v)
 }
 // DFS()
 // Runs depth first search
-void DFS(Graph G, List S);
+void DFS(Graph G, List S)
+{
+    int graphTime = 0;
+    for(int u = 1; u <= getOrder(G); u++)
+    {
+        G -> color[u] = 0;
+        G -> parent[u] = NIL;
+    }
+    for(int j = 1; j <= getOrder(G); j++)
+    {
+        if(G -> color[front(S)] == 0)
+        {
+            visit(G, S, front(S), &graphTime);
+        }
+
+        deleteFront(S);
+    }
+}
+// visit ()
+// recursively visits vertices in DFS
+void visit(Graph G, List L, int u, int* t)
+{
+    int v;
+    (*t)++;
+    G -> discover[(*t)];
+    G -> color[u] = 1;
+
+    for(moveFront( G -> adjLists[u]); index(G -> adjLists[u]) != -1; moveNext(G -> adjLists[u]))
+    {
+        v = get(G -> adjLists[u]);
+
+        if(G -> color[v] == 0)
+        {
+            G -> parent[v] = u;
+            visit(G,S, l, &t);
+        }
+    }
+    G -> color[u] = 2;
+    (*t)++;
+    G -> finish[u] = (*t);
+    prepend(S,u);
+
+
+}
 
 
 /* Other Functions */
+// transpose()
+// does the filippty flip
 Graph transpose(Graph G)
 {
-    Graph tGraph = newGraph()
+    Graph transGraph = newGraph(G -> size);
+    for (int i = 0; i <= G -> size; i++)
+    {
+        for (moveFront(G -> adjLists[i]); index(G -> adjLists[i]) != -1; moveNext(G -> adjLists[i]))
+        {
+            addArc(G, index(G -> adjLists[i]), i);
+        }
+    }
+    return transGraph;
 }
 
- // public Matrix transpose()
- //  {
- //    Matrix transMatrix = new Matrix(size);
- //    for(int i = 0; i <= size; i++)
- //    {
- //      for(matrixArray[i].moveFront(); matrixArray[i].index()>=0; matrixArray[i].moveNext())
- //      {
- //        Entry transEntry = (Entry) matrixArray[i].get();
- //        int newColumn = transEntry.column;
- //        transMatrix.changeEntry(newColumn, i, transEntry.value);
- //      }
- //    }
-
- //    return transMatrix;
- //  }
 //printGraph()
 // prints out graph
 void printGraph(FILE* out, Graph G)
