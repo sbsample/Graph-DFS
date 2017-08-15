@@ -8,7 +8,7 @@
 # include <stdlib.h>
 # include "List.h"
 /*** Constructors-Destructors ***/
-#define INF -2
+#define UNDEF -2
 #define NIL -1
 
 typedef struct GraphObj* Graph;

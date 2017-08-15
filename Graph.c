@@ -219,7 +219,7 @@ void visit(Graph G, List L, int u, int* t)
 {
     int v;
     (*t)++;
-    G -> discover[(*t)];
+    // G -> discover[(*t)];
     G -> color[u] = 1;
 
     for(moveFront( G -> adjLists[u]); index(G -> adjLists[u]) != -1; moveNext(G -> adjLists[u]))
@@ -229,7 +229,7 @@ void visit(Graph G, List L, int u, int* t)
         if(G -> color[v] == 0)
         {
             G -> parent[v] = u;
-            visit(G,S, l, &t);
+            visit(G, L, v, t);
         }
     }
     G -> color[u] = 2;
