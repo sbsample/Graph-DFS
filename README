@@ -1,13 +1,14 @@
 //Staunton Sample
-// pa4
+// pa5
 //cmps101
 //sbsample
 
-This program accepts a set of numbers and then creates an adjecency list out of them. This, then allows the Breadth First Search algorithm implementation using the Graph ADT. The shortest path between two vertices can then be calculated and printed to the console. 
+This program accepts a set of numbers and then creates an adjecency list out of them. This, then allows the Depth First Search algorithm implementation using the Graph ADT. The program can then find all strongly connected components.
 
 Use make to compile the program.
 Use make clean to remove .o and executable files.
 
+FindComponents.c - main call, uses dfs to find SCCP
 List.h - Header for List ADT
 List.c - Linked List Interface
 Graph.h - Header for Graph ADT

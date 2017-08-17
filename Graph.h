@@ -1,8 +1,11 @@
 //Staunton Sample
-// pa4
+// pa5
 //cmps101
 //sbsample
 // #define _POSIX_C_SOURCE 200809l
+# ifndef GRAPH_H
+# define GRAPH_H
+
 # include <string.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -32,3 +35,5 @@ void BFS(Graph G, int s);
 /* Other Functions */
 Graph transpose(Graph G);
 void printGraph(FILE* out, Graph G);
+
+#endif

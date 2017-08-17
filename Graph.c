@@ -1,5 +1,5 @@
 //Staunton Sample
-// pa4
+// pa5
 //cmps101
 //sbsample
 // #define _POSIX_C_SOURCE 200809l
@@ -10,8 +10,6 @@
 # include "Graph.h"
 /*** Constructors-Destructors ***/
 
-#define UNDEF -2
-#define NIL -1
 
 // Defines Graph
 typedef struct GraphObj
@@ -40,6 +38,7 @@ Graph newGraph(int n)
     G -> finish = calloc((n + 1), sizeof(int));
     for (int i = 1; i <= n; i++)
     {
+
         G -> adjLists[i] = newList();
         G -> discover[i] = UNDEF;
         G -> finish[i] = UNDEF;
@@ -87,6 +86,7 @@ void freeGraph(Graph* pG)
 // returns discover time of vertex u
 int getDiscover(Graph G, int u)
 {
+    // printf("getDiscover returns :%d\n",G -> discover[u]);
     return G -> discover[u];
 }
 
@@ -94,6 +94,7 @@ int getDiscover(Graph G, int u)
 // returns finish time of vertex u
 int getFinish(Graph G, int u)
 {
+    // printf("getFinish returns :%d\n",G -> finish[u]);
     return G -> finish[u];
 }
 
@@ -113,6 +114,7 @@ int getOrder(Graph G)
 // returns size of graph
 int getSize(Graph G)
 {
+    // printf("get size called");
     return G -> size;
 }
 
@@ -174,18 +176,19 @@ void addArc(Graph G, int u, int v)
 
         if (length(G -> adjLists[u]) == 0)
         {
-            // printf("addArc size = 0 for insert value %d \n", v);
+            // printf("addArc size = 0 for insert value u:%d, v:%d \n",u, v);
             append(G -> adjLists[u], v);
             break;
         }
         else if (get(G -> adjLists[u]) > v)
         {
-            // printf("addArc else if insert value: %d\n", v);
+            // printf("addArc else if insert value: u:%d, v:%d \n",u, v);
             insertBefore(G -> adjLists[u], v);
             break;
         }
         else
         {
+            // printf("addArc else insert value: u:%d, v:%d \n",u, v);
             insertAfter(G -> adjLists[u], v);
             break;
         }
@@ -197,36 +200,58 @@ void addArc(Graph G, int u, int v)
 // Runs depth first search
 void DFS(Graph G, List S)
 {
+    // printf("pre visit List\n");
+    // printf("\n");
+    // for (moveFront(S); index(S) != -1; moveNext(S))
+    // {
+    //      printf("%d ", get(S)) ;
+    // }
+    // printf("\n");
     int graphTime = 0;
-    for(int u = 1; u <= getOrder(G); u++)
+    for (int u = 1; u <= getOrder(G); u++)
     {
         G -> color[u] = 0;
         G -> parent[u] = NIL;
     }
-    for(int j = 1; j <= getOrder(G); j++)
+    for (moveFront(S); index(S) != -1; moveNext(S))
     {
-        if(G -> color[front(S)] == 0)
+        if (G -> color[get(S)] == 0)
         {
-            visit(G, S, front(S), &graphTime);
+            visit(G, S, get(S), &graphTime);
         }
-
-        deleteFront(S);
     }
+    
+    for (int i = 1; i <= getOrder(G); i++)
+    {
+       deleteBack(S);
+    }
+    // printf("\n");
+    // printf("post visit List\n");
+    // for (moveFront(S); index(S) != -1; moveNext(S))
+    // {
+    //      printf("%d ", get(S));
+    // }
+    // printf("\n");
 }
 // visit ()
 // recursively visits vertices in DFS
 void visit(Graph G, List L, int u, int* t)
 {
+    // printf("visit called\n");
     int v;
     (*t)++;
-    // G -> discover[(*t)];
     G -> color[u] = 1;
+    G -> discover[u] = *t;
 
-    for(moveFront( G -> adjLists[u]); index(G -> adjLists[u]) != -1; moveNext(G -> adjLists[u]))
+    for (moveFront(G -> adjLists[u]); index(G -> adjLists[u]) != -1; moveNext(G -> adjLists[u]))
     {
+         if (length(G -> adjLists[u]) == 0)
+        {
+            break;
+        }
         v = get(G -> adjLists[u]);
 
-        if(G -> color[v] == 0)
+        if (G -> color[v] == 0)
         {
             G -> parent[v] = u;
             visit(G, L, v, t);
@@ -234,8 +259,8 @@ void visit(Graph G, List L, int u, int* t)
     }
     G -> color[u] = 2;
     (*t)++;
-    G -> finish[u] = (*t);
-    prepend(S,u);
+    G -> finish[u] = *t;
+    prepend(L,u);
 
 
 }

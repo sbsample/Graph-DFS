@@ -5,15 +5,15 @@
 
 CC = gcc
 CFLAGS = -g -Wall -Werror -std=c99
-OBJECTS = Graph.o List.o FindPath.o
+OBJECTS = Graph.o FindComponents.o List.o
 
 .PHONY: all
-all: FindPath
-FindPath	:	$(OBJECTS)
-	$(CC) $(OBJECTS) -o FindPath
+all: FindComponents
+FindComponents	:	$(OBJECTS)
+	$(CC) $(OBJECTS) -o FindComponents
 
-FindPath.o :	FindPath.c
-	$(CC) $(CFLAGS) -c FindPath.c
+FindComponents.o :	FindComponents.c
+	$(CC) $(CFLAGS) -c FindComponents.c
 
 List.o : List.c
 	$(CC) $(CFLAGS) -c List.c
@@ -25,6 +25,6 @@ Graph.o : Graph.c
 
 .PHONY: clean
 clean:
-	rm $(OBJECTS) FindPath
+	rm $(OBJECTS) FindComponents
 
 

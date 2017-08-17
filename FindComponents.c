@@ -1,5 +1,5 @@
 //Staunton Sample
-// pa4
+// pa5
 //cmps101
 //sbsample
 #include<stdio.h>
@@ -12,11 +12,10 @@
 int main(int argc, char* argv[]){
 	FILE* in;
 	FILE* out;
-	char* token;
-	int veritces;
+	int vertices = 0;
 	int u, v;
-	
-	
+
+
 	if(argc != 3){
 		fprintf(stderr,"Needs two files\n");
 		exit(1);
@@ -30,27 +29,34 @@ int main(int argc, char* argv[]){
 
 	fscanf(in, "%d", &vertices);
 
-	while(fgets(row, 256, in) != NULL) 
+	while(fgets(row, 256, in) != NULL)
 	{
 		rows++;
 	}
-	
-	int size = (rows * 2) - 1; 
+
+	int size = (rows * 2) - 1;
 
 	fclose(in);
 	in = fopen(argv[1], "r");
 	int counter = 0;
 
-	Graph adjList = new Graph;
-	while (counter < size && u != 0) 
+	Graph adjList = newGraph(vertices);
+	while (counter < size && u != 0)
 	{
-		fscanf(in, "%d ", &u, &v);
-		addArc(addArc, u, v);
+		fscanf(in, "%d %d", &u, &v);
+		addArc(adjList, u, v);
 	}
-	
-	
-	
 
-	free(&adjList);
-	
+	fprintf(out, "Adjacency list representation of G:\n");
+	printGraph(out, adjList);
+	fprintf(out, "\n");
+
+	fprintf(out, "vertices %d\n", vertices);
+	fprintf(out, "rows: %d\n",rows );
+
+
+
+
+	freeGraph(&adjList);
+
 }

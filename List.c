@@ -52,7 +52,7 @@ void freeList(List* pl)
 			deleteFront(*pl);
 		}
 		free(*pl);
-		printf("%d\n", (*pl) -> length);
+		// printf("%d\n", (*pl) -> length);
 		// *pl = NULL;
 	}
 }
@@ -349,12 +349,12 @@ void deleteFront(List L)
 
 	}
 	if(temp != NULL)
-  	{	
+  	{
   		free(temp);
   		temp = NULL;
   	}
-  	
-	
+
+
 
 }
 //deleteBack()
@@ -394,9 +394,9 @@ void deleteBack(List L)
 	}
 	if(temp != NULL)
   	{
-  		free(temp);	
+  		free(temp);
   	}
-  	
+
 	temp = NULL;
 
 }
@@ -438,7 +438,7 @@ void delete(List L)
   	if(temp != NULL)
   	{
   		free(temp);
-  		temp = NULL;	
+  		temp = NULL;
   	}
   	L -> length -= 1;
 	// temp = NULL;
